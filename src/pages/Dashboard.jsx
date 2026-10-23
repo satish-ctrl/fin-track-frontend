@@ -14,6 +14,7 @@ import {
   Settings,
   RefreshCw,
   Wallet,
+  UserRound,
 } from 'lucide-react'
 import {
   Bar,
@@ -83,6 +84,7 @@ function Dashboard() {
   const navigate = useNavigate()
   const location = useLocation()
   const [dashboard, setDashboard] = useState(null)
+  const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [period, setPeriod] = useState('month')
@@ -139,6 +141,33 @@ function Dashboard() {
   useEffect(() => {
     loadDashboard()
   }, [loadDashboard])
+
+  useEffect(() => {
+    let active = true
+
+    async function loadProfile() {
+      try {
+        const response = await api.get('/api/users/me')
+        if (active) setProfile(response.data)
+      } catch (requestError) {
+        const status = requestError.response?.status
+
+        if (active && (status === 401 || status === 403)) {
+          localStorage.removeItem('fintrack_access_token')
+          localStorage.removeItem('fintrack_token_type')
+          navigate('/login', { replace: true })
+        }
+      }
+    }
+
+    if (localStorage.getItem('fintrack_access_token')) {
+      loadProfile()
+    }
+
+    return () => {
+      active = false
+    }
+  }, [navigate])
 
   function handleLogout() {
     localStorage.removeItem('fintrack_access_token')
@@ -208,10 +237,16 @@ function Dashboard() {
         </nav>
 
         <div className="dashboard-sidebar-bottom">
-          <div className="dashboard-user-mark">FT</div>
+          <div className="dashboard-user-mark" aria-hidden="true">
+            {profile?.username?.trim()?.charAt(0)?.toUpperCase() || <UserRound size={18} />}
+          </div>
           <div className="dashboard-user-copy">
-            <strong>My FinTrack</strong>
-            <span>Personal workspace</span>
+            <strong title={profile?.username || 'My FinTrack'}>
+              {profile?.username || 'My FinTrack'}
+            </strong>
+            <span title={profile?.email || 'Personal workspace'}>
+              {profile?.email || 'Personal workspace'}
+            </span>
           </div>
           <button
             className="dashboard-logout-icon"
