@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   Tags,
   Settings,
+  FileText,
   X,
   CheckCircle2,
   AlertCircle,
@@ -160,6 +161,11 @@ export default function Accounts() {
           <Link to="/categories" className="accounts-nav-link">
             <Tags size={19} />
             <span>Categories</span>
+          </Link>
+
+          <Link to="/reports" className="accounts-nav-link">
+            <FileText size={19} />
+            <span>Reports &amp; Export</span>
           </Link>
 
           <Link to="/settings" className="accounts-nav-link">

@@ -6,6 +6,7 @@ import {
   ArrowLeftRight,
   Tags,
   Settings,
+  FileText,
   Plus,
   Search,
   RefreshCw,
@@ -140,6 +141,11 @@ function Categories() {
           <NavLink to="/categories" className="categories-nav-link">
             <Tags size={19} />
             <span>Categories</span>
+          </NavLink>
+
+          <NavLink to="/reports" className="categories-nav-link">
+            <FileText size={19} />
+            <span>Reports &amp; Export</span>
           </NavLink>
 
           <NavLink to="/settings" className="categories-nav-link">

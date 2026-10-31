@@ -9,14 +9,40 @@ const api = axios.create({
   },
 })
 
+const publicAuthEndpoints = [
+  '/api/auth/register',
+  '/api/auth/login',
+  '/api/auth/forgot-password',
+  '/api/auth/reset-password',
+]
+
 api.interceptors.request.use(
   (config) => {
+    const requestUrl = (config.url || '').split('?')[0].replace(/\/+$/, '')
+
+    const isPublicAuthRequest = publicAuthEndpoints.some(
+      (endpoint) => requestUrl === endpoint,
+    )
+
+    if (isPublicAuthRequest) {
+      // Public auth requests must not carry an old JWT.
+      if (config.headers) {
+        delete config.headers.Authorization
+        delete config.headers.authorization
+      }
+
+      return config
+    }
+
     const accessToken = localStorage.getItem('fintrack_access_token')
     const tokenType =
       localStorage.getItem('fintrack_token_type') || 'Bearer'
 
     if (accessToken) {
       config.headers.Authorization = `${tokenType} ${accessToken}`
+    } else if (config.headers) {
+      delete config.headers.Authorization
+      delete config.headers.authorization
     }
 
     return config

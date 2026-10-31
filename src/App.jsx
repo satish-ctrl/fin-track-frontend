@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom'
 
 import Home from './pages/Home'
@@ -12,6 +11,7 @@ import ConnectionTest from './pages/ConnectionTest'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import Settings from './pages/Settings'
+import Reports from './pages/Reports'
 
 function NotFoundPage() {
   return (
@@ -57,6 +57,7 @@ function App() {
         <Route path="/accounts" element={<Accounts />} />
         <Route path="/transactions" element={<Transactions />} />
         <Route path="/categories" element={<Categories />} />
+        <Route path="/reports" element={<Reports />} />
         <Route path="/settings" element={<Settings />} />
 
         {/* API connection testing */}

@@ -19,6 +19,7 @@ import {
   UserRound,
   Pencil,
   Save,
+  FileText,
   X,
 } from 'lucide-react'
 import api from '../services/api'
@@ -248,6 +249,16 @@ function Settings() {
           >
             <Tags size={19} />
             <span>Categories</span>
+          </Link>
+
+          <Link
+            to="/reports"
+            className={`dashboard-nav-link ${
+              location.pathname === '/reports' ? 'active' : ''
+            }`}
+          >
+            <FileText size={19} />
+            <span>Reports &amp; Export</span>
           </Link>
 
           <Link

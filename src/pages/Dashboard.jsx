@@ -15,6 +15,7 @@ import {
   RefreshCw,
   Wallet,
   UserRound,
+  FileText,
 } from 'lucide-react'
 import {
   Bar,
@@ -34,7 +35,14 @@ import {
 import api from '../services/api'
 import './Dashboard.css'
 
-const CHART_COLORS = ['#2c6045', '#739879', '#a8c7a1', '#d2dfc9', '#8a9e77', '#c1a77b']
+const CHART_COLORS = [
+  '#2c6045',
+  '#739879',
+  '#a8c7a1',
+  '#d2dfc9',
+  '#8a9e77',
+  '#c1a77b',
+]
 
 function formatCurrency(value) {
   return new Intl.NumberFormat('en-IN', {
@@ -48,6 +56,7 @@ function getLocalDate(date) {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0')
   const day = String(date.getDate()).padStart(2, '0')
+
   return `${year}-${month}-${day}`
 }
 
@@ -68,8 +77,9 @@ function ChartTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
 
   return (
-    <div className="dash-chart-tooltip">
+    <div className="dashboard-chart-tooltip">
       <strong>{label}</strong>
+
       {payload.map((entry) => (
         <div key={entry.dataKey} className="dash-tooltip-row">
           <span style={{ background: entry.color }} />
@@ -83,6 +93,7 @@ function ChartTooltip({ active, payload, label }) {
 function Dashboard() {
   const navigate = useNavigate()
   const location = useLocation()
+
   const [dashboard, setDashboard] = useState(null)
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -148,7 +159,10 @@ function Dashboard() {
     async function loadProfile() {
       try {
         const response = await api.get('/api/users/me')
-        if (active) setProfile(response.data)
+
+        if (active) {
+          setProfile(response.data)
+        }
       } catch (requestError) {
         const status = requestError.response?.status
 
@@ -208,29 +222,71 @@ function Dashboard() {
       <aside className="dashboard-sidebar">
         <Link to="/" className="dashboard-brand">
           <span className="dashboard-brand-mark">f</span>
-          <span>fintrack<span className="dashboard-brand-dot">.</span></span>
+          <span>
+            fintrack<span className="dashboard-brand-dot">.</span>
+          </span>
         </Link>
 
         <div className="dashboard-sidebar-caption">WORKSPACE</div>
 
         <nav className="dashboard-nav" aria-label="Main navigation">
-          <Link to="/dashboard" className={`dashboard-nav-link ${location.pathname === '/dashboard' ? 'active' : ''}`}>
+          <Link
+            to="/dashboard"
+            className={`dashboard-nav-link ${
+              location.pathname === '/dashboard' ? 'active' : ''
+            }`}
+          >
             <LayoutDashboard size={19} />
             <span>Overview</span>
           </Link>
-          <Link to="/accounts" className={`dashboard-nav-link ${location.pathname === '/accounts' ? 'active' : ''}`}>
+
+          <Link
+            to="/accounts"
+            className={`dashboard-nav-link ${
+              location.pathname === '/accounts' ? 'active' : ''
+            }`}
+          >
             <Wallet size={19} />
             <span>Accounts</span>
           </Link>
-          <Link to="/transactions" className={`dashboard-nav-link ${location.pathname === '/transactions' ? 'active' : ''}`}>
+
+          <Link
+            to="/transactions"
+            className={`dashboard-nav-link ${
+              location.pathname === '/transactions' ? 'active' : ''
+            }`}
+          >
             <ArrowLeftRight size={19} />
             <span>Transactions</span>
           </Link>
-          <Link to="/categories" className={`dashboard-nav-link ${location.pathname === '/categories' ? 'active' : ''}`}>
+
+          <Link
+            to="/categories"
+            className={`dashboard-nav-link ${
+              location.pathname === '/categories' ? 'active' : ''
+            }`}
+          >
             <Tags size={19} />
             <span>Categories</span>
           </Link>
-          <Link to="/settings" className={`dashboard-nav-link ${location.pathname === '/settings' ? 'active' : ''}`}>
+
+          {/* New Reports & Export navigation */}
+          <Link
+            to="/reports"
+            className={`dashboard-nav-link ${
+              location.pathname === '/reports' ? 'active' : ''
+            }`}
+          >
+            <FileText size={19} />
+            <span>Reports &amp; Export</span>
+          </Link>
+
+          <Link
+            to="/settings"
+            className={`dashboard-nav-link ${
+              location.pathname === '/settings' ? 'active' : ''
+            }`}
+          >
             <Settings size={19} />
             <span>Settings</span>
           </Link>
@@ -238,16 +294,21 @@ function Dashboard() {
 
         <div className="dashboard-sidebar-bottom">
           <div className="dashboard-user-mark" aria-hidden="true">
-            {profile?.username?.trim()?.charAt(0)?.toUpperCase() || <UserRound size={18} />}
+            {profile?.username?.trim()?.charAt(0)?.toUpperCase() || (
+              <UserRound size={18} />
+            )}
           </div>
+
           <div className="dashboard-user-copy">
             <strong title={profile?.username || 'My FinTrack'}>
               {profile?.username || 'My FinTrack'}
             </strong>
+
             <span title={profile?.email || 'Personal workspace'}>
               {profile?.email || 'Personal workspace'}
             </span>
           </div>
+
           <button
             className="dashboard-logout-icon"
             onClick={handleLogout}
@@ -262,14 +323,19 @@ function Dashboard() {
       <main className="dashboard-main">
         <header className="dashboard-topbar">
           <div>
-            <span className="dashboard-breadcrumb">WORKSPACE / OVERVIEW</span>
+            <span className="dashboard-breadcrumb">
+              WORKSPACE / OVERVIEW
+            </span>
+
             <h1>Financial overview</h1>
+
             <p>A clearer picture of where your money stands.</p>
           </div>
 
           <div className="dashboard-toolbar">
             <label className="dashboard-period-select">
               <span className="sr-only">Reporting period</span>
+
               <select
                 value={period}
                 onChange={(event) => setPeriod(event.target.value)}
@@ -279,6 +345,7 @@ function Dashboard() {
                 <option value="month">This month</option>
                 <option value="year">This year</option>
               </select>
+
               <ChevronDown size={15} />
             </label>
 
@@ -315,6 +382,7 @@ function Dashboard() {
                     <Wallet size={18} />
                   </span>
                 </div>
+
                 <strong>{formatCurrency(totalBalance)}</strong>
                 <p>Across your accounts</p>
                 <div className="balance-card-decoration" />
@@ -327,8 +395,10 @@ function Dashboard() {
                     <ArrowDownLeft size={18} />
                   </span>
                 </div>
+
                 <strong>{formatCurrency(totalIncome)}</strong>
                 <p>For selected period</p>
+
                 <div className="dashboard-metric-bottom income-text">
                   <ArrowDownLeft size={14} /> Money in
                 </div>
@@ -341,8 +411,10 @@ function Dashboard() {
                     <ArrowUpRight size={18} />
                   </span>
                 </div>
+
                 <strong>{formatCurrency(totalExpenses)}</strong>
                 <p>For selected period</p>
+
                 <div className="dashboard-metric-bottom expense-text">
                   <ArrowUpRight size={14} /> Money out
                 </div>
@@ -355,10 +427,15 @@ function Dashboard() {
                     <CircleDollarSign size={18} />
                   </span>
                 </div>
-                <strong className={netCashFlow < 0 ? 'negative-value' : ''}>
+
+                <strong
+                  className={netCashFlow < 0 ? 'negative-value' : ''}
+                >
                   {formatCurrency(netCashFlow)}
                 </strong>
+
                 <p>Income minus expenses</p>
+
                 <div className="dashboard-metric-bottom">
                   <ChartNoAxesCombined size={14} /> Selected period
                 </div>
@@ -369,10 +446,15 @@ function Dashboard() {
               <article className="dashboard-panel dashboard-wide-panel">
                 <div className="dashboard-panel-heading">
                   <div>
-                    <span className="dashboard-section-kicker">CASH FLOW</span>
+                    <span className="dashboard-section-kicker">
+                      CASH FLOW
+                    </span>
                     <h2>Income vs expenses</h2>
-                    <p>Compare the money coming in and going out.</p>
+                    <p>
+                      Compare the money coming in and going out.
+                    </p>
                   </div>
+
                   <span className="dashboard-panel-icon">
                     <ChartNoAxesCombined size={19} />
                   </span>
@@ -387,7 +469,12 @@ function Dashboard() {
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart
                         data={dailyData}
-                        margin={{ top: 8, right: 6, left: 0, bottom: 0 }}
+                        margin={{
+                          top: 8,
+                          right: 6,
+                          left: 0,
+                          bottom: 0,
+                        }}
                         barGap={5}
                       >
                         <CartesianGrid
@@ -395,6 +482,7 @@ function Dashboard() {
                           strokeDasharray="3 3"
                           vertical={false}
                         />
+
                         <XAxis
                           dataKey="label"
                           tick={{ fill: '#4f584b', fontSize: 12 }}
@@ -402,6 +490,7 @@ function Dashboard() {
                           tickLine={false}
                           minTickGap={18}
                         />
+
                         <YAxis
                           tickFormatter={(value) =>
                             value >= 1000
@@ -413,7 +502,9 @@ function Dashboard() {
                           tickLine={false}
                           width={49}
                         />
+
                         <Tooltip content={<ChartTooltip />} />
+
                         <Legend
                           verticalAlign="top"
                           align="right"
@@ -425,6 +516,7 @@ function Dashboard() {
                             paddingBottom: 16,
                           }}
                         />
+
                         <Bar
                           dataKey="income"
                           name="Income"
@@ -432,6 +524,7 @@ function Dashboard() {
                           radius={[4, 4, 0, 0]}
                           maxBarSize={22}
                         />
+
                         <Bar
                           dataKey="expense"
                           name="Expenses"
@@ -448,7 +541,9 @@ function Dashboard() {
               <article className="dashboard-panel dashboard-category-panel">
                 <div className="dashboard-panel-heading">
                   <div>
-                    <span className="dashboard-section-kicker">BREAKDOWN</span>
+                    <span className="dashboard-section-kicker">
+                      BREAKDOWN
+                    </span>
                     <h2>Spending by category</h2>
                     <p>See where your expenses go.</p>
                   </div>
@@ -477,13 +572,19 @@ function Dashboard() {
                             {categoryData.map((item, index) => (
                               <Cell
                                 key={item.name}
-                                fill={CHART_COLORS[index % CHART_COLORS.length]}
+                                fill={
+                                  CHART_COLORS[
+                                    index % CHART_COLORS.length
+                                  ]
+                                }
                               />
                             ))}
                           </Pie>
+
                           <Tooltip content={<ChartTooltip />} />
                         </PieChart>
                       </ResponsiveContainer>
+
                       <div className="dashboard-pie-center">
                         <span>Total spent</span>
                         <strong>{formatCurrency(totalExpenses)}</strong>
@@ -498,39 +599,58 @@ function Dashboard() {
                             : 0
 
                         return (
-                          <div className="dashboard-category-row" key={item.name}>
+                          <div
+                            className="dashboard-category-row"
+                            key={item.name}
+                          >
                             <span
                               className="dashboard-category-dot"
                               style={{
                                 background:
-                                  CHART_COLORS[index % CHART_COLORS.length],
+                                  CHART_COLORS[
+                                    index % CHART_COLORS.length
+                                  ],
                               }}
                             />
+
                             <div className="dashboard-category-details">
                               <span className="dashboard-category-name">
                                 {item.name}
                               </span>
+
                               <div
                                 className="dashboard-category-track"
                                 role="progressbar"
                                 aria-label={`${item.name} share of total expenses`}
                                 aria-valuemin={0}
                                 aria-valuemax={100}
-                                aria-valuenow={Number(categoryPercentage.toFixed(1))}
+                                aria-valuenow={Number(
+                                  categoryPercentage.toFixed(1),
+                                )}
                               >
                                 <div
                                   className="dashboard-category-fill"
                                   style={{
-                                    width: `${Math.min(categoryPercentage, 100)}%`,
+                                    width: `${Math.min(
+                                      categoryPercentage,
+                                      100,
+                                    )}%`,
                                     background:
-                                      CHART_COLORS[index % CHART_COLORS.length],
+                                      CHART_COLORS[
+                                        index % CHART_COLORS.length
+                                      ],
                                   }}
                                 />
                               </div>
                             </div>
+
                             <div className="dashboard-category-values">
-                              <strong>{formatCurrency(item.amount)}</strong>
-                              <span>{categoryPercentage.toFixed(1)}%</span>
+                              <strong>
+                                {formatCurrency(item.amount)}
+                              </strong>
+                              <span>
+                                {categoryPercentage.toFixed(1)}%
+                              </span>
                             </div>
                           </div>
                         )
@@ -545,26 +665,35 @@ function Dashboard() {
                   <div>
                     <span className="dashboard-section-kicker">TREND</span>
                     <h2>Daily cash flow</h2>
-                    <p>Track your daily income and expense pattern.</p>
+                    <p>
+                      Track your daily income and expense pattern.
+                    </p>
                   </div>
                 </div>
 
                 {dailyData.length === 0 ? (
                   <div className="dashboard-empty">
-                    Your daily trend will appear when transactions are available.
+                    Your daily trend will appear when transactions are
+                    available.
                   </div>
                 ) : (
                   <div className="dashboard-chart-area dashboard-line-area">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart
                         data={dailyData}
-                        margin={{ top: 12, right: 10, left: 0, bottom: 0 }}
+                        margin={{
+                          top: 12,
+                          right: 10,
+                          left: 0,
+                          bottom: 0,
+                        }}
                       >
                         <CartesianGrid
                           stroke="#e9ede5"
                           strokeDasharray="3 3"
                           vertical={false}
                         />
+
                         <XAxis
                           dataKey="label"
                           tick={{ fill: '#4f584b', fontSize: 12 }}
@@ -572,6 +701,7 @@ function Dashboard() {
                           tickLine={false}
                           minTickGap={18}
                         />
+
                         <YAxis
                           tickFormatter={(value) =>
                             value >= 1000
@@ -583,7 +713,9 @@ function Dashboard() {
                           tickLine={false}
                           width={49}
                         />
+
                         <Tooltip content={<ChartTooltip />} />
+
                         <Legend
                           verticalAlign="top"
                           align="right"
@@ -595,6 +727,7 @@ function Dashboard() {
                             paddingBottom: 16,
                           }}
                         />
+
                         <Line
                           type="monotone"
                           dataKey="income"
@@ -604,6 +737,7 @@ function Dashboard() {
                           dot={false}
                           activeDot={{ r: 4 }}
                         />
+
                         <Line
                           type="monotone"
                           dataKey="expense"
@@ -622,8 +756,10 @@ function Dashboard() {
               <article className="dashboard-panel">
                 <div className="dashboard-panel-heading">
                   <div>
-                    <span className="dashboard-section-kicker">ACTIVITY</span>
-                    <h2>Income & expense history</h2>
+                    <span className="dashboard-section-kicker">
+                      ACTIVITY
+                    </span>
+                    <h2>Income &amp; expense history</h2>
                     <p>Daily figures for the selected period.</p>
                   </div>
                 </div>
@@ -641,13 +777,18 @@ function Dashboard() {
                     </div>
 
                     {[...dailyData].reverse().map((item) => (
-                      <div className="dashboard-history-row" key={item.date}>
+                      <div
+                        className="dashboard-history-row"
+                        key={item.date}
+                      >
                         <span className="dashboard-history-date">
                           {shortDate(item.date)}
                         </span>
+
                         <span className="dashboard-history-income">
                           +{formatCurrency(item.income)}
                         </span>
+
                         <span className="dashboard-history-expense">
                           −{formatCurrency(item.expense)}
                         </span>

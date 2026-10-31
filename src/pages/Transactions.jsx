@@ -6,6 +6,7 @@ import {
   ArrowLeftRight,
   Tags,
   Settings,
+  FileText,
   Plus,
   RefreshCw,
   Search,
@@ -359,6 +360,10 @@ export default function Transactions() {
           <Link to="/categories" className="transactions-nav-link">
             <Tags size={19} />
             <span>Categories</span>
+          </Link>
+          <Link to="/reports" className="transactions-nav-link">
+            <FileText size={19} />
+            <span>Reports &amp; Export</span>
           </Link>
           <Link to="/settings" className="transactions-nav-link">
             <Settings size={19} />
